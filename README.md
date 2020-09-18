@@ -68,7 +68,7 @@ within Phoenix projects.
       config :your_app, YourAppWeb.Endpoint,
         live_reload: [
           patterns: [
-    +       ~r"assets/sass/.*(sass|scss)$",
+    +       ~r"priv/sass/.*(sass|scss)$",
             ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
     ```
 
@@ -76,15 +76,35 @@ within Phoenix projects.
 
     ```diff
     + config :your_app, :phoenix_sass,
-    +   sass_dir: "assets/sass",  # this is the default
+    +   pattern: "priv/sass/**/*.s[ac]ss",   # this is the default
     +   output_dir: "priv/static/css",  # this is the default
-    +   output_style: 1   # default is defined by Mix.env(): prod == 1, otherwise 2
+    +   output_style: 3   # this is the default (compressed)
     ```
 
-    Note: Any further options are passed directly through to [`sass_compiler`][sass_compiler_opts].
+
+## Config
+
+Config is pretty simple. `:pattern` can be a string or a list of
+strings defining paths to search for Sass files.
+
+All paths (`pattern` and `output_dir`) are relative to `Application.app_dir/1`.
+
+Any further options are passed directly through to [`sass_compiler`][sass_compiler_opts]
+along with `output_style`.
 
 
-## Why?
+## Usage
+
+Simply add Sass files to `priv/sass` and edit them as needed. They'll
+be converted to CSS on save, and Phoenix's LiveReload will take care
+of the rest.
+
+Any Sass file prefixed with an underscore (for example, a file named
+`_colors.scss`) will be skipped during processing, but should be handled
+correctly as an include file (for a file named `app.scss`, for example).
+
+
+## Why? (Motivation)
 
 One should be able to use Sass for a website without the need for Webpack.
 
