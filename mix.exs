@@ -10,7 +10,7 @@ defmodule PhoenixSass.MixProject do
     [
       app: :phoenix_sass,
       version: @version,
-      elixir: "~> 1.9",
+      elixir: "~> 1.5",
       build_embedded: Mix.env() == :prod,
       deps: deps(),
 
