@@ -1,5 +1,7 @@
 # Sass compiler for Phoenix
 
+[![current build status on Travis-CI.org](https://travis-ci.org/OldhamMade/phoenix_sass.svg?branch=master)][travis]
+
 This library compiles Sass (`.scss` and `.sass`) files to CSS
 within Phoenix projects.
 
@@ -109,4 +111,6 @@ correctly as an include file (for a file named `app.scss`, for example).
 One should be able to use Sass for a website without the need for Webpack.
 
 
+
+[travis]: https://travis-ci.org/OldhamMade/phoenix_sass
 [sass_compiler_opts]: https://hexdocs.pm/sass_compiler/Sass.html#module-currently-supported-sass-options

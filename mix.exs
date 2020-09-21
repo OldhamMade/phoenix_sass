@@ -1,7 +1,7 @@
 defmodule PhoenixSass.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.4"
 
   @description "Compile Sass files to CSS within Phoenix projects"
   @repo_url "https://github.com/OldhamMade/phoenix_sass"
@@ -46,6 +46,7 @@ defmodule PhoenixSass.MixProject do
   defp deps do
     [
       {:sass_compiler, "~> 0.1"},
+      {:temp, "~> 0.4", only: :test},
       {:ex_doc, "~> 0.19", only: :docs}
     ]
   end
