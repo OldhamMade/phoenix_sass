@@ -20,11 +20,7 @@ defmodule PhoenixSass.MixProject do
 
       # Docs
       name: "phoenix_sass",
-      docs: [
-        source_ref: "v#{@version}",
-        main: "Phoenix Sass",
-        source_url: @repo_url
-      ]
+      docs: docs()
     ]
   end
 
@@ -39,7 +35,7 @@ defmodule PhoenixSass.MixProject do
       maintainers: ["Phillip Oldham"],
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => @repo_url},
-      files: ~w(lib mix.exs *.md)
+      files: ~w(lib .formatter.exs mix.exs *.md LICENSE)
     ]
   end
 
@@ -49,5 +45,12 @@ defmodule PhoenixSass.MixProject do
       {:temp, "~> 0.4", only: :test},
       {:ex_doc, "~> 0.19", only: :docs}
     ]
+  end
+
+  defp docs do
+    [extras: ["README.md"],
+     main: "readme",
+     source_ref: "v#{@version}",
+     source_url: @repo_url]
   end
 end

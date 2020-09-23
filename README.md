@@ -5,6 +5,12 @@
 This library compiles Sass (`.scss` and `.sass`) files to CSS
 within Phoenix projects.
 
+
+## Why? (Rationale)
+
+One should be able to use Sass with a website without the need for NodeJS.
+
+
 ## Installation
 
 1. Add `phoenix_sass` to your list of dependencies in `mix.exs`:
@@ -104,12 +110,6 @@ of the rest.
 Any Sass file prefixed with an underscore (for example, a file named
 `_colors.scss`) will be skipped during processing, but should be handled
 correctly as an include file (for a file named `app.scss`, for example).
-
-
-## Why? (Motivation)
-
-One should be able to use Sass for a website without the need for Webpack.
-
 
 
 [travis]: https://travis-ci.org/OldhamMade/phoenix_sass
