@@ -43,7 +43,7 @@ defmodule PhoenixSass.MixProject do
     [
       {:sass_compiler, "~> 0.1"},
       {:temp, "~> 0.4", only: :test},
-      {:ex_doc, "~> 0.19", only: :docs}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
