@@ -3,7 +3,7 @@ defmodule PhoenixSass.MixProject do
 
   @version "0.1.4"
 
-  @description "Compile Sass files to CSS within Phoenix projects"
+  @description "Auto-compile Sass to CSS within Phoenix projects without NodeJS"
   @repo_url "https://github.com/OldhamMade/phoenix_sass"
 
   def project do
