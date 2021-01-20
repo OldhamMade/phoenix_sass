@@ -98,8 +98,8 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
       %{ transform | sass: sass }
 
     else
-      error ->
-        %{ transform | result: error }
+      {:error, error} ->
+        %{ transform | result: :error, error: error }
     end
   end
 
@@ -113,8 +113,8 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
       %{ transform | result: :ok }
 
     else
-      error ->
-        %{ transform | result: error }
+      {:error, error} ->
+        %{ transform | result: :error, error: transform.error || error }
     end
   end
 
@@ -207,7 +207,10 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
   end
 
   defp format_warning(%Transform{} = transform) do
-    "  #{Path.join(transform.srcdir, transform.basename)} -> #{inspect transform.result}"
+    """
+      #{Path.join(transform.srcdir, transform.basename)} ->
+        #{transform.error}
+    """
   end
 
 end

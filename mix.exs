@@ -1,7 +1,7 @@
 defmodule PhoenixSass.MixProject do
   use Mix.Project
 
-  @version "0.1.4"
+  @version "0.1.5"
 
   @description "Auto-compile Sass to CSS within Phoenix projects without NodeJS"
   @repo_url "https://github.com/OldhamMade/phoenix_sass"

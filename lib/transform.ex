@@ -10,5 +10,6 @@ defmodule PhoenixSass.Transform do
     :opts,
     :sass,
     :result,
+    :error,
   ]
 end
