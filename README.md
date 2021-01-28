@@ -38,7 +38,7 @@ One should be able to use Sass with a website without the need for NodeJS.
       end
     ```
 
-1. Add the `:phoenix_sass` compiler to your Mix compilers so your backends
+1. Add the `:phoenix_sass` compiler to your Mix `compilers` so your backends
    are recompiled when Saas files change:
 
     ```diff
@@ -84,18 +84,18 @@ One should be able to use Sass with a website without the need for NodeJS.
 
     ```diff
     + config :your_app, :phoenix_sass,
-    +   pattern: "priv/sass/**/*.s[ac]ss",   # this is the default
-    +   output_dir: "priv/static/css",  # this is the default
+    +   pattern: "sass/**/*.s[ac]ss",  # this is the default
+    +   output_dir: "static/css",      # this is the default
     +   output_style: 3   # this is the default (compressed)
     ```
 
 
-## Config
+## Configuration
 
-Config is pretty simple. `:pattern` can be a string or a list of
+Configuration is simple: `:pattern` can be a string or a list of
 strings defining paths to search for Sass files.
 
-All paths (`pattern` and `output_dir`) are relative to `Application.app_dir/1`.
+All paths (`pattern` and `output_dir`) are relative to `:code.priv_dir/1`.
 
 Any further options are passed directly through to [`sass_compiler`][sass_compiler_opts]
 along with `output_style`.
@@ -103,14 +103,33 @@ along with `output_style`.
 
 ## Usage
 
-Simply add Sass files to `priv/sass` and edit them as needed. They'll
-be converted to CSS on save, and Phoenix's LiveReload will take care
-of the rest.
+Add Sass files to the `priv` directory, define `pattern` to find them,
+then edit them as needed. They'll be converted to CSS when edited,
+written to `output_dir`, and Phoenix's LiveReload will see the change
+and take care of the rest.
 
-Any Sass file prefixed with an underscore (for example, a file named
-`_colors.scss`) will be skipped during processing, but should be handled
-correctly as an include file (for a file named `app.scss`, for example).
+Sass files prefixed with an underscore (for example, a file named
+`_colors.scss`) will be skipped during processing, but should be resolved
+correctly for `@import` directives.
 
+
+## Releases
+
+During development the compiler will automatically convert Sass files
+to CSS, however for releases the conversion needs to be executed
+manually using the mix task:
+<!-- MIX_TASK !-->
+
+    mix phx.sass
+
+This will find Sass files matching the `pattern` defined in your
+config, convert them to CSS, and save them in the `output_dir`.
+
+It's recommended that this step is done just before calling `mix phx.digest`:
+
+    mix do phx.sass, phx.digest
+
+<!-- MIX_TASK !-->
 
 [travis]: https://travis-ci.org/OldhamMade/phoenix_sass
 [sass_compiler_opts]: https://hexdocs.pm/sass_compiler/Sass.html#module-currently-supported-sass-options

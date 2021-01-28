@@ -12,13 +12,13 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
   """
 
   @default_config [
-    pattern: "priv/sass/**/*.s[ac]ss",
-    output_dir: "priv/static/css",
+    pattern: "sass/**/*.s[ac]ss",
+    output_dir: "static/css",
     output_style: 3
   ]
 
   def run(_args) do
-    app_dir()
+    priv_dir()
     |> Path.join(config()[:pattern])
     |> process_patterns()
     |> check_result()
@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
 
   defp process_pattern(pattern) do
     root =
-      app_dir()
+      priv_dir()
 
     config =
       config()
@@ -143,15 +143,18 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
   defp is_globish?(chunk),
     do: String.contains?(chunk, ["*", "?", "[", "{"])
 
-  defp app_dir() do
-    Mix.Project.config()
-    # |> Application.app_dir()
-    |> Mix.Project.app_path()
+  defp app(),
+    do: Mix.Project.config[:app]
+
+  defp priv_dir() do
+    app()
+    |> :code.priv_dir()
+    |> String.Chars.to_string()
   end
 
   defp config do
     app_config =
-      Mix.Project.config[:app]
+      app()
       |> Application.get_env(:phoenix_sass, [])
 
     Keyword.merge(@default_config, app_config)
@@ -182,7 +185,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
       |> Map.get(:skipped, [])
       |> Enum.count()
 
-    Logger.info("sass processing result: #{processed} processed, #{skipped} skipped")
+    Logger.info("#{app}: sass files processed: #{processed}, skipped: #{skipped}")
 
     results
     |> Map.get(:error)
@@ -202,8 +205,8 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
       errors
       |> Enum.count()
 
-    Logger.warn("sass processing errors: #{count}")
-    Logger.debug("sass error details:\n#{report}")
+    Logger.warn("#{app}: sass processing errors: #{count}")
+    Logger.debug("#{app}: sass error details:\n#{report}")
   end
 
   defp format_warning(%Transform{} = transform) do
