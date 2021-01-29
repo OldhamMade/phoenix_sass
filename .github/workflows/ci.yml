@@ -1,0 +1,172 @@
+name: CI
+
+on:
+  push:
+    # CI shouldn't need to run on the main branch,
+    # just working & PR branches
+    branches-ignore:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - elixir: 1.6
+            otp: 20.3
+          - elixir: 1.7.x
+            otp: 21.x
+          - elixir: 1.8.x
+            otp: 21.x
+          - elixir: 1.9.x
+            otp: 22.x
+          - elixir: 1.10.x
+            otp: 23.x
+          - elixir: 1.11.x
+            otp: 23.x
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Elixir
+        uses: actions/setup-elixir@v1
+        with:
+          elixir-version: ${{matrix.elixir}}
+          otp-version: ${{matrix.otp}}
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            deps
+            _build/test/lib
+          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+      - name: Install Dependencies
+        run: mix deps.get
+
+      - name: Build Dependencies
+        env:
+          MIX_ENV: test
+        run: mix deps.compile
+
+      - name: Build Project
+        env:
+          MIX_ENV: test
+        run: mix compile --warnings-as-errors
+
+  # To be included when automated formatting
+  # happens via pre-/post-commit hooks
+  # ---
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Elixir
+  #       uses: actions/setup-elixir@v1
+  #       with:
+  #         elixir-version: '1.11.x'
+  #         otp-version: '23.2.1'
+  #     - name: Cache Dependencies
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           deps
+  #           _build/test/lib
+  #         key: ${{ runner.os }}-mix-test-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-mix-test-
+  #     - name: Check formatting
+  #       env:
+  #         MIX_ENV: test
+  #       run: mix format --check-formatted
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      matrix:
+        include:
+          - elixir: 1.6
+            otp: 20.3
+          - elixir: 1.7.x
+            otp: 21.x
+          - elixir: 1.8.x
+            otp: 21.x
+          - elixir: 1.9.x
+            otp: 22.x
+          - elixir: 1.10.x
+            otp: 23.x
+          - elixir: 1.11.x
+            otp: 23.x
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Elixir
+        uses: actions/setup-elixir@v1
+        with:
+          elixir-version: ${{matrix.elixir}}
+          otp-version: ${{matrix.otp}}
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            deps
+            _build/test/lib
+          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+      - name: Run tests
+        run: mix test
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: test
+
+    strategy:
+      matrix:
+        include:
+          - elixir: 1.6
+            otp: 20.3
+          - elixir: 1.7.x
+            otp: 21.x
+          - elixir: 1.8.x
+            otp: 21.x
+          - elixir: 1.9.x
+            otp: 22.x
+          - elixir: 1.10.x
+            otp: 23.x
+          - elixir: 1.11.x
+            otp: 23.x
+
+    env:
+      MIX_ENV: test
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Elixir
+        uses: actions/setup-elixir@v1
+        with:
+          elixir-version: ${{matrix.elixir}}
+          otp-version: ${{matrix.otp}}
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            deps
+            _build/test/lib
+          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
+      - name: Build ExCoveralls
+        run: mix compile excoveralls
+
+      - name: Coverage Summary
+        run: mix coveralls
+
+      - name: Publish Coverage
+        run: mix coveralls.github

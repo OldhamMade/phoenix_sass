@@ -185,7 +185,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
       |> Map.get(:skipped, [])
       |> Enum.count()
 
-    Logger.info("#{app}: sass files processed: #{processed}, skipped: #{skipped}")
+    Logger.info("#{app()}: sass files processed: #{processed}, skipped: #{skipped}")
 
     results
     |> Map.get(:error)
@@ -205,8 +205,8 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
       errors
       |> Enum.count()
 
-    Logger.warn("#{app}: sass processing errors: #{count}")
-    Logger.debug("#{app}: sass error details:\n#{report}")
+    Logger.warn("#{app()}: sass processing errors: #{count}")
+    Logger.debug("#{app()}: sass error details:\n#{report}")
   end
 
   defp format_warning(%Transform{} = transform) do
