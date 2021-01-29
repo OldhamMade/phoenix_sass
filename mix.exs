@@ -20,7 +20,16 @@ defmodule PhoenixSass.MixProject do
 
       # Docs
       name: "phoenix_sass",
-      docs: docs()
+      docs: docs(),
+
+      # Coverage
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -43,7 +52,8 @@ defmodule PhoenixSass.MixProject do
     [
       {:sass_compiler, "~> 0.1"},
       {:temp, "~> 0.4", only: :test},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:excoveralls, "~> 0.10", only: [:dev, :test]},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
     ]
   end
 

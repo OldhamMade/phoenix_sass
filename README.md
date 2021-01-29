@@ -1,6 +1,6 @@
 # Sass compiler for Phoenix
 
-[![current build status on Travis-CI.org](https://travis-ci.org/OldhamMade/phoenix_sass.svg?branch=master)][travis]
+![CI][ci-badge] [![Coverage Status][coverage-badge]][coverage-link]
 
 This library compiles Sass (`.scss` and `.sass`) files to CSS
 within Phoenix projects.
@@ -131,5 +131,48 @@ It's recommended that this step is done just before calling `mix phx.digest`:
 
 <!-- MIX_TASK !-->
 
-[travis]: https://travis-ci.org/OldhamMade/phoenix_sass
+## Contributing
+
+**Note: the project is made & maintained by a small team of humans,
+who on occasion may make mistakes and omissions. Please do not
+hesitate to point out if you notice a bug or something missing, and
+consider contributing if you can.**
+
+The project is managed on a best-effort basis, and aims to be "good
+enough". If there are features missing please raise a ticket or create
+a Pull Request by following these steps:
+
+1.  [Fork it](/fork)
+2.  Create your feature branch (`git checkout -b my-new-feature`)
+3.  Commit your changes (`git commit -am 'Add some feature'`)
+4.  Push to the branch (`git push origin my-new-feature`)
+5.  Raise a new pull request via GitHub
+
+## Liability
+
+We take no responsibility for the use of our tool, or external
+instances provided by third parties. We strongly recommend you abide
+by the valid official regulations in your country. Furthermore, we
+refuse liability for any inappropriate or malicious use of this
+tool. This tool is provided to you in the spirit of free, open
+software.
+
+You may view the LICENSE in which this software is provided to you
+[here](./LICENSE).
+
+> 8. Limitation of Liability. In no event and under no legal theory,
+>    whether in tort (including negligence), contract, or otherwise,
+>    unless required by applicable law (such as deliberate and grossly
+>    negligent acts) or agreed to in writing, shall any Contributor be
+>    liable to You for damages, including any direct, indirect, special,
+>    incidental, or consequential damages of any character arising as a
+>    result of this License or out of the use or inability to use the
+>    Work (including but not limited to damages for loss of goodwill,
+>    work stoppage, computer failure or malfunction, or any and all
+>    other commercial damages or losses), even if such Contributor
+>    has been advised of the possibility of such damages.
+
+[ci-badge]: https://github.com/OldhamMade/phoenix_sass/workflows/CI/badge.svg
+[coverage-badge]: https://coveralls.io/repos/github/OldhamMade/phoenix_sass/badge.svg
+[coverage-link]: https://coveralls.io/github/OldhamMade/phoenix_sass
 [sass_compiler_opts]: https://hexdocs.pm/sass_compiler/Sass.html#module-currently-supported-sass-options
