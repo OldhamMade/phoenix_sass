@@ -142,7 +142,7 @@ The project is managed on a best-effort basis, and aims to be "good
 enough". If there are features missing please raise a ticket or create
 a Pull Request by following these steps:
 
-1.  [Fork it](/fork)
+1.  [Fork it][fork]
 2.  Create your feature branch (`git checkout -b my-new-feature`)
 3.  Commit your changes (`git commit -am 'Add some feature'`)
 4.  Push to the branch (`git push origin my-new-feature`)
@@ -173,6 +173,7 @@ You may view the LICENSE in which this software is provided to you
 >    has been advised of the possibility of such damages.
 
 [ci-badge]: https://github.com/OldhamMade/phoenix_sass/workflows/CI/badge.svg
-[coverage-badge]: https://coveralls.io/repos/github/OldhamMade/phoenix_sass/badge.svg
-[coverage-link]: https://coveralls.io/github/OldhamMade/phoenix_sass
+[coverage-badge]: https://coveralls.io/repos/github/OldhamMade/phoenix_sass/badge.svg?branch=main
+[coverage-link]: https://coveralls.io/github/OldhamMade/phoenix_sass?branch=main
 [sass_compiler_opts]: https://hexdocs.pm/sass_compiler/Sass.html#module-currently-supported-sass-options
+[fork]: https://github.com/OldhamMade/phoenix_sass/fork

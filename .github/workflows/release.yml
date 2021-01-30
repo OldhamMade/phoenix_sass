@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  # Trigger this workflow on push (merge) events,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "[Git] Checkout code"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "[Setup] Open /usr/local/bin Permissions"
+        run: sudo chmod -R a+rwx /usr/local/bin
+
+      - name: "[Setup] Cache Dependencies"
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            /usr/local/bin/git-cl
+          key: ${{ runner.os }}-release
+          restore-keys: |
+            ${{ runner.os }}-release
+
+      - name: "[Version] Install"
+        uses: gittools/actions/gitversion/setup@v0.9.6
+        with:
+          versionSpec: '5.x'
+
+      - name: "[Version] Calculate"
+        id: gitversion # step id used as reference for output values
+        uses: gittools/actions/gitversion/execute@v0.9.6
+
+      - name: "[Version] Capture"
+        run: echo "RELEASE_VERSION=${{ steps.gitversion.outputs.semVer }}" >> $GITHUB_ENV
+
+      - name: "[Version] Update"
+        run: |
+          sed -i 's/@version ".*"/@version "${{env.RELEASE_VERSION}}"/gi' mix.exs
+
+      - name: "[Changelog] Create temporary tag for correct output"
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{env.RELEASE_VERSION}}
+          message: "Tag for release ${{env.RELEASE_VERSION}}"
+          force_push_tag: true
+
+      - name: "[Changelog] Install build tools"
+        uses: fwal/setup-swift@v1
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          swift-version: "5.2"
+
+      - name: "[Changelog] Install git-ci"
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          cd /tmp/
+          git clone https://github.com/uptech/git-cl.git git-cl
+          cd ./git-cl
+          make -j$(nproc)
+          sudo make install
+          sudo chmod a+rwx /usr/local/bin/git-cl
+          cd -
+
+      - name: "[Changelog] Generate"
+        run: |
+          git cl full > CHANGELOG.md
+          sed -i 's/,.*$/./gi' CHANGELOG.md
+
+      - name: "[Release] Commit release updates"
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: '["mix.exs", "CHANGELOG.md"]'
+          message: "Update CHANGELOG & version in preparation for release"
+          push: true
+
+      - name: "[Release] Delete temporary tag"
+        uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        with:
+          delete_release: false
+          tag_name: ${{env.RELEASE_VERSION}}
+
+      - name: "[Release] Create new release"
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{env.RELEASE_VERSION}}
+          release_name: ${{env.RELEASE_VERSION}}
+          body: |
+            Please see the CHANGELOG for further details
+          draft: false
+          prerelease: false
+
+      - name: "[Release] Publish to Hex.pm"
+        uses: erlangpack/github-action@v1

@@ -1,11 +1,6 @@
 name: CI
 
-on:
-  push:
-    # CI shouldn't need to run on the main branch,
-    # just working & PR branches
-    branches-ignore:
-      - main
+on: push
 
 jobs:
   build:
