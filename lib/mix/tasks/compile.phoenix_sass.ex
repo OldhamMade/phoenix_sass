@@ -147,9 +147,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
     do: Mix.Project.config[:app]
 
   defp priv_dir() do
-    app()
-    |> :code.priv_dir()
-    |> String.Chars.to_string()
+    Mix.Project.app_path() |> Path.join("priv")
   end
 
   defp config do
