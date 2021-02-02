@@ -22,6 +22,9 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
     |> Path.join(config()[:pattern])
     |> process_patterns()
     |> check_result()
+  catch
+    {:error, msg} ->
+      Logger.error("#{app()}: #{msg}")
   end
 
   defp process_patterns(pattern) when not is_list(pattern),
@@ -147,9 +150,19 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
     do: Mix.Project.config[:app]
 
   defp priv_dir() do
-    app()
-    |> :code.priv_dir()
-    |> String.Chars.to_string()
+    path =
+      Mix.Project.app_path()
+      |> Path.join("priv")
+
+    path
+    |> Path.expand()
+    |> File.exists?()
+    |> case do
+         true ->
+           path
+         false ->
+           throw {:error, "priv_dir path invalid or inaccessible: #{path}"}
+       end
   end
 
   defp config do
