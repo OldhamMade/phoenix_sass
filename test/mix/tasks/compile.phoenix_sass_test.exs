@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Compile.PhoenixSassTest do
   use ExUnit.Case
+  import ExUnit.CaptureLog
 
   @fixtures_path "../../fixtures" |> Path.expand(__DIR__)
 
@@ -47,6 +48,21 @@ defmodule Mix.Tasks.Compile.PhoenixSassTest do
   end
 
   describe "PhoenixSass" do
+    test ":ok for no sass files" do
+      File.rm_rf!(Path.join(test_app_dir(), "priv/*"))
+
+      assert Mix.Tasks.Phx.Sass.run([]) == :ok
+    end
+
+    test ":error when priv_dir inaccessible" do
+      File.rm_rf!(test_app_dir())
+
+      {result, msg} = Mix.Tasks.Phx.Sass.run([])
+
+      assert result == :error
+      assert msg =~ "priv_dir path invalid or inaccessible:"
+    end
+
     test "compiles sass to css successfully" do
       Mix.Tasks.Phx.Sass.run([])
 
@@ -70,6 +86,14 @@ defmodule Mix.Tasks.Compile.PhoenixSassTest do
         |> Path.wildcard()
         |> Enum.count()
       )
+    end
+
+    test "errors are handled properly" do
+      Path.join(test_app_dir(), "priv/sass/main.sass")
+      |> File.write("\n*\n  backgroun-color #", [:append])
+
+      assert Mix.Tasks.Phx.Sass.run([]) == :ok
+      assert capture_log(fn -> Mix.Tasks.Phx.Sass.run([]) end) =~ "sass processing errors: 1"
     end
   end
 
