@@ -1,0 +1,56 @@
+name: Changelog Check
+
+on:
+  # Trigger this workflow on push (merge) events,
+  # but ignore the main branch
+  push:
+    branches-ignore:
+      - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "[Git] Checkout code"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "[Setup] Open /usr/local/bin Permissions"
+        run: sudo chmod -R a+rwx /usr/local/bin
+
+      - name: "[Setup] Cache Dependencies"
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            /usr/local/bin/git-cl
+          key: ${{ runner.os }}-release
+          restore-keys: |
+            ${{ runner.os }}-release
+
+      - name: "[Changelog] Install build tools"
+        uses: fwal/setup-swift@v1
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          swift-version: "5.2"
+
+      - name: "[Changelog] Install git-ci"
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          cd /tmp/
+          git clone https://github.com/uptech/git-cl.git git-cl
+          cd ./git-cl
+          make -j$(nproc)
+          sudo make install
+          sudo chmod a+rwx /usr/local/bin/git-cl
+          cd -
+
+      - name: "[Changelog] Fail if no changelog entries"
+        run: |
+          git cl unreleased | tail -n +4 | xargs
+          [ "$(git cl unreleased | tail -n +4 | xargs)" ] || exit 1

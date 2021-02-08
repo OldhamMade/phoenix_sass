@@ -75,6 +75,11 @@ jobs:
           sudo chmod a+rwx /usr/local/bin/git-cl
           cd -
 
+      - name: "[Changelog] Fail if no changelog entries"
+        run: |
+          git cl released ${{env.RELEASE_VERSION}}
+          [ "$(git cl released ${{env.RELEASE_VERSION}} | xargs)" ] || exit 1
+
       - name: "[Changelog] Generate"
         run: |
           git cl full > CHANGELOG.md

@@ -25,6 +25,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
   catch
     {:error, msg} ->
       Logger.error("#{app()}: #{msg}")
+      {:error, msg}
   end
 
   defp process_patterns(pattern) when not is_list(pattern),
@@ -179,7 +180,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
     |> Enum.into(%{})
   end
 
-  defp check_result([]), do: {:noop}
+  defp check_result([]), do: :noop
   defp check_result(transforms) do
     results =
       transforms
@@ -204,7 +205,7 @@ defmodule Mix.Tasks.Compile.PhoenixSass do
     |> Map.get(:error)
     |> warn_of_errors()
 
-    {:ok, []}
+    :ok
   end
 
   defp warn_of_errors(nil), do: :noop
