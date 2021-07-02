@@ -48,13 +48,13 @@ defmodule Mix.Tasks.Compile.PhoenixSassTest do
   end
 
   describe "PhoenixSass" do
-    test ":ok for no sass files" do
+    test "returns :ok for no sass files" do
       File.rm_rf!(Path.join(test_app_dir(), "priv/*"))
 
       assert Mix.Tasks.Phx.Sass.run([]) == :ok
     end
 
-    test ":error when priv_dir inaccessible" do
+    test "returns :error when priv_dir inaccessible" do
       File.rm_rf!(test_app_dir())
 
       {result, msg} = Mix.Tasks.Phx.Sass.run([])
@@ -75,6 +75,30 @@ defmodule Mix.Tasks.Compile.PhoenixSassTest do
       assert File.exists?(Path.join([test_priv_dir(), "static", "css", "sub", "extra.css"]))
     end
 
+    test "compiles sass to expanded css successfully" do
+      Application.put_env(:test_project, :phoenix_sass, output_style: 1)
+      file_path = Path.join([test_priv_dir(), "static", "css", "main.css"])
+
+      Mix.Tasks.Phx.Sass.run([])
+
+      assert File.exists?(file_path)
+      assert File.read!(file_path) == """
+      body {
+        background: green;
+      }
+      """
+    end
+
+    test "compiles sass to compressed css successfully" do
+      Application.put_env(:test_project, :phoenix_sass, output_style: 3)
+      file_path = Path.join([test_priv_dir(), "static", "css", "main.css"])
+
+      Mix.Tasks.Phx.Sass.run([])
+
+      assert File.exists?(file_path)
+      assert File.read!(file_path) == "body{background:green}\n"
+    end
+
     test "skips sass with underscore prefix successfully" do
       Mix.Tasks.Phx.Sass.run([])
 
@@ -88,7 +112,7 @@ defmodule Mix.Tasks.Compile.PhoenixSassTest do
       )
     end
 
-    test "errors are handled properly" do
+    test "handles errors properly" do
       Path.join(test_app_dir(), "priv/sass/main.sass")
       |> File.write("\n*\n  backgroun-color #", [:append])
 

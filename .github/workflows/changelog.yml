@@ -52,5 +52,5 @@ jobs:
 
       - name: "[Changelog] Fail if no changelog entries"
         run: |
-          git cl unreleased | tail -n +4 | xargs
-          [ "$(git cl unreleased | tail -n +4 | xargs)" ] || exit 1
+          git cl unreleased | tail -n +4 | xargs -0
+          [ "$(git cl unreleased | tail -n +4 | xargs -0)" ] || exit 1

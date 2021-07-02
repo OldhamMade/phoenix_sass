@@ -78,7 +78,7 @@ jobs:
       - name: "[Changelog] Fail if no changelog entries"
         run: |
           git cl released ${{env.RELEASE_VERSION}}
-          [ "$(git cl released ${{env.RELEASE_VERSION}} | xargs)" ] || exit 1
+          [ "$(git cl released ${{env.RELEASE_VERSION}} | xargs -0)" ] || exit 1
 
       - name: "[Changelog] Generate"
         run: |
